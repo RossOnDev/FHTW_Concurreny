@@ -1,4 +1,5 @@
 # Threading Concurrency
+Patrick Rössler, Ferzan Yarar
 
 ## Subtask 2: Deadlock Prevention
 
