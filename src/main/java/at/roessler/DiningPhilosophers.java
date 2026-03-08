@@ -9,12 +9,12 @@ public class DiningPhilosophers {
 //    private final int MAX_EATING_TIME = 5000;
 //    private final int NUMBER_OF_PHILOSOPHERS = 10;
 
-    private final int MAX_THINKING_TIME = 500;
+    private final int MAX_THINKING_TIME = 50;
     private final int MAX_EATING_TIME = 500;
     private final int NUMBER_OF_PHILOSOPHERS = 10;
 
     private boolean isRunning = true;
-    private ReentrantLock[] forks;
+    private final ReentrantLock[] forks;
 
     public DiningPhilosophers() {
         this.forks = new ReentrantLock[this.NUMBER_OF_PHILOSOPHERS];
@@ -64,23 +64,25 @@ public class DiningPhilosophers {
         Thread.sleep(t);
         System.out.println("Phil<" + idxPhil + "> finished thinking (" + t + "ms)");
 
-        int firstForkIdx = idxPhil;
-        int secondForkIdx = (idxPhil + 1) % this.NUMBER_OF_PHILOSOPHERS;
+        // Deadlock prevention (own) ... macht genau das gleiche wie im Task lol
+//        int firstForkIdx = idxPhil;
+//        int secondForkIdx = (idxPhil + 1) % this.NUMBER_OF_PHILOSOPHERS;
 
-        // Deadlock safe
-        int firstLock = Math.min(firstForkIdx, secondForkIdx);
-        int secondLock = Math.max(firstForkIdx, secondForkIdx);
+        // int firstLock = Math.min(firstForkIdx, secondForkIdx);
+        // int secondLock = Math.max(firstForkIdx, secondForkIdx);
 
-//        int firstLock = firstForkIdx;
-//        int secondLock = secondForkIdx;
+        // Deadlock prevention (task)
+        int firstLock = idxPhil % 2 == 1 ? idxPhil : idxPhil + 1;
+        int secondLock = idxPhil % 2 == 1 ? idxPhil + 1 : idxPhil;
+
 
         forks[firstLock].lock();
         try {
-            System.out.println("Phil<" + idxPhil + "> took first fork<" + firstForkIdx + ">");
+            System.out.println("Phil<" + idxPhil + "> took first fork<" + firstLock + ">");
 
             forks[secondLock].lock();
             try {
-                System.out.println("Phil<" + idxPhil + "> took second fork<" + secondForkIdx + ">");
+                System.out.println("Phil<" + idxPhil + "> took second fork<" + secondLock + ">");
 
                 int t2 = rdm.nextInt(0, this.MAX_EATING_TIME + 1);
                 System.out.println("Phil<" + idxPhil + "> finished eating (" + t2 + "ms)");
