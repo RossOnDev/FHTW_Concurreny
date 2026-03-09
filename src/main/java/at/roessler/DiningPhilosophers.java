@@ -14,7 +14,7 @@ public class DiningPhilosophers {
     private final int MAX_EATING_TIME = 500;
     private final int NUMBER_OF_PHILOSOPHERS = 10;
 
-    private boolean isRunning = true;
+    private volatile boolean isRunning = true;
     private final ReentrantLock[] forks;
 
     private final AtomicLong totalEatingTimeNanos = new AtomicLong(0L);
